@@ -10,11 +10,22 @@ namespace My_first_WinForms_app
     using System;
     using System.Collections;
 
+
     [Serializable]
-    public abstract class BLOCK
+    public class position
     {
         int row;
         int col;
+
+        public position()
+                :this(0, 0)
+            {}
+
+        public position(int r, int c)
+        {
+            row = r;
+            col = c;
+        }
 
         public int Row
         {
@@ -39,6 +50,38 @@ namespace My_first_WinForms_app
                 col = value;
             }
         }
+    }
+
+
+
+    [Serializable]
+    public abstract class BLOCK
+    {
+        position pos;
+
+        public BLOCK()
+            :this(0,0)
+        { }
+
+        public BLOCK(int r, int c)
+        {
+            pos.Row = r;
+            pos.Col = c;
+        }
+
+        public position Pos
+        {
+            get
+            {
+                return pos;
+            }
+
+            set
+            {
+                pos = value;
+            }
+            
+        }
 
         public abstract void Draw(Graphics g);
     }
@@ -48,20 +91,12 @@ namespace My_first_WinForms_app
     public class GameBlock : BLOCK
     {
         bool hasFlag;
-        bool hasBomb;
-        bool hasNum;
-        int number;
+        bool isVisible;
 
         public GameBlock()
-            : this(false)
-        {}
-
-        public GameBlock(bool bomb)
         {
             hasFlag = false;
-            hasBomb = bomb;
-            hasNum = false;
-            number = 0;
+            isVisible = false;
         }
 
         public bool HasFlag
@@ -76,124 +111,187 @@ namespace My_first_WinForms_app
             }
         }
 
-        public bool HasBomb
+        public bool IsVisible
         {
             get
             {
-                return hasBomb;
+                return isVisible;
             }
             set
             {
-                hasBomb = value;
+                isVisible = value;
             }
         }
 
-        public bool HasNum
+        public override void Draw(Graphics g)
+        {
+            SolidBrush br = new SolidBrush(Color.Gray);
+            Pen p = new Pen(Color.Black,5);
+
+            if (isVisible)
+            {
+                br.Color = Color.White;
+            }
+            else if (hasFlag)
+            {
+                br.Color = Color.Red;
+            }
+
+            g.FillRectangle(br, Pos.Col, Pos.Row, 5, 5);
+            g.DrawRectangle(p, Pos.Col, Pos.Row, 5, 5);
+        }
+    }
+
+    [Serializable]
+
+    public class ActivatedBlock : GameBlock
+    {
+        bool bomb;
+        int number;
+
+        public ActivatedBlock()
+            : this(false, 0)
+        {}
+
+        public ActivatedBlock(bool b, int n)
+        {
+            bomb = b;
+            number = n;
+        }
+
+        public bool Bomb
         {
             get
             {
-                return hasNum;
+                return bomb;
             }
+
             set
             {
-                hasNum = value;
+                bomb = value;
             }
         }
-        
+
         public int Number
         {
             get
             {
                 return number;
             }
+
             set
             {
                 number = value;
             }
         }
 
+
+        public void incrementNum()
+        {
+            if (!bomb)
+                number++;
+        }
+
         public override void Draw(Graphics g)
         {
-            
+            SolidBrush br = new SolidBrush(Color.Gray);
+            Pen p = new Pen(Color.Black, 5);
+
+            switch (number) 
+            {
+                case 1:
+                    br.Color = Color.Blue;
+                    break;
+                case 2:
+                    br.Color = Color.Orange;
+                    break;
+                case 3:
+                    br.Color = Color.DarkRed;
+                    break;
+                default:
+                    break;
+            }
+
+            g.FillRectangle(br, Pos.Col, Pos.Row, 5, 5);
+            g.DrawRectangle(p, Pos.Col, Pos.Row, 5, 5);
         }
+
     }
+
 
     [Serializable]
 
     public class GameGrid
     {
-        GameBlock[,] grid;
-        int endCol;
-        int endRow;
+        ActivatedBlock[,] grid;
+        int difficulty;
 
         public GameGrid()
+            : this(5) { }
+
+        public GameGrid(int diff)
         {
-            grid = new GameBlock[5,5];
-            endCol = 5;
-            endRow = 5;
+            difficulty = diff;
+
+            grid = new ActivatedBlock[50,50];
+
+            int i, j;
+
+            for (i=0;i<50;i++)
+            {
+                for (j=0;j<50;j++)
+                {
+                    grid[i, j].Pos.Row = i;
+                    grid[i, j].Pos.Col = j;
+                }
+            }
         }
 
         public void initGame()
         {
-            grid[0, 0].HasBomb = true;
-            surroundBomb(0, 0);
-        }
+            int rC, rR, i, j;
+            Random gen = new Random();
 
-        public void surroundBomb(int row, int col)
-        {
-            if (row != 0)
+            for (i=0; i<= difficulty; i++)
             {
-                grid[row - 1, col].HasNum = true;
-                grid[row - 1, col].Number++;
+                rR = gen.Next() % 50;
+                rC = gen.Next() % 50;
 
-                if (col != 0)
-                {
-                    grid[row-1,col-1].HasNum = true;
-                    grid[row - 1, col - 1].Number++;
-                    grid[row, col - 1].HasNum = true;
-                    grid[row, col - 1].Number++;
-                }
-
-                if (col != endCol)
-                {
-                    grid[row - 1, col + 1].HasNum = true;
-                    grid[row - 1, col + 1].Number++;
-                    grid[row, col + 1].HasNum = true;
-                    grid[row, col + 1].Number++;
-                }
-
+                grid[rR, rC].Bomb = true;
             }
 
-            if (row != endRow)
+            if (grid[1, 0].Bomb && !grid[0,0].Bomb)
+                grid[0, 0].incrementNum();
+
+            for (i=0; i<50; i++)
             {
-                grid[row + 1, col].HasNum = true;
-                grid[row + 1, col].Number++;
-
-                if (col != 0)
+                for (j=1; j<50; j++)
                 {
-                    grid[row + 1, col - 1].HasNum = true;
-                    grid[row + 1, col - 1].Number++;
-                    grid[row, col - 1].HasNum = true;
-                    grid[row, col - 1].Number++;
-                }
+                    if (grid[i, j - 1].Bomb)
+                        grid[i, j].incrementNum();
 
-                if (col != endCol)
-                {
-                    grid[row + 1, col + 1].HasNum = true;
-                    grid[row + 1, col + 1].Number++;
-                    grid[row, col + 1].HasNum = true;
-                    grid[row, col + 1].Number++;
+                    if (grid[i + 1, j - 1].Bomb)
+                        grid[i, j].incrementNum();
+
+                    if (grid[i + 1, j].Bomb)
+                        grid[i, j].incrementNum();
                 }
             }
-
         }
+
+
 
         public void DrawGrid(Graphics g)
         {
-            SolidBrush br = new SolidBrush(Color.Red);
-            Pen pen = new Pen(Color.Cyan, 2);
-            g.FillRectangle(br, 5, 5, 50, 50);
-            g.DrawRectangle(pen, 5, 5, 50, 50);
+            int i, j;
+
+            for (i=0;i<50;i++)
+            {
+                for (j=0;j<50;j++)
+                {
+                    grid[i, j].Draw(g);
+                }
+            }
         }
     }
 

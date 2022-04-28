@@ -31,8 +31,18 @@ namespace My_first_WinForms_app
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
             g = e.Graphics;
             game.DrawGrid(g);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
