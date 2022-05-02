@@ -20,9 +20,8 @@ namespace My_first_WinForms_app
             InitializeComponent();
 
             game = new GameGrid();
+            game.initGame();
 
-
-            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -43,7 +42,7 @@ namespace My_first_WinForms_app
 
         private void button1_Click(object sender, EventArgs e)
         {
-            game.initGame();
+            //game.initGame();
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -68,10 +67,19 @@ namespace My_first_WinForms_app
 
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
-            double mX = e.X;
-            double mY = e.Y;
+            int mX = e.X / 20;
+            int mY = e.Y / 20;
 
-            game.showBlock((int)mX, (int)mY);      
+            game.showBlock(mX,mY);
+
+            Console.WriteLine("Clicked on x=" + mX + "  y=" + mY);
+
+            pictureBox1.Invalidate();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -328,7 +328,7 @@ namespace My_first_WinForms_app
 
         public void showBlock(int x, int y)
         {
-            if (x >= size || y >= size || grid[x, y].Bomb || grid[x,y].IsVisible || x < 0 || y < 0)
+            if (x >= size || y >= size || x < 0 || y < 0 || grid[x, y].Bomb || grid[x,y].IsVisible )
                 return;
 
             grid[x, y].IsVisible = true;
