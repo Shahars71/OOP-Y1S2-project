@@ -215,8 +215,13 @@ namespace My_first_WinForms_app
                         br.Color = Color.DarkRed;
                     break;
                 default:
+                    if (IsVisible)
+                        br.Color = Color.White;
                     break;
             }
+
+            if (Bomb && IsVisible)
+                br.Color = Color.Black;
 
             g.FillRectangle(br, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
             g.DrawRectangle(p, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
@@ -234,6 +239,38 @@ namespace My_first_WinForms_app
         ActivatedBlock[,] grid;
         int difficulty;
         int size;
+
+        public int Difficulty
+        {
+            get
+            {
+                return difficulty;
+            }
+
+            set
+            {
+                difficulty = value;
+            }
+        }
+
+        public int Size
+        {
+            get
+            {
+                return size;
+            }
+
+            set
+            {
+                size = value;
+            }
+        }
+
+        public ActivatedBlock this[int x,int y]
+        {
+            get => grid[x, y];
+            set => grid[x, y] = value;
+        }
 
         public GameGrid()
             : this(30,20) { }
@@ -316,36 +353,62 @@ namespace My_first_WinForms_app
             }
         }
 
-        public void setDifficulty(int diff)
-        {
-            difficulty = diff;
-        }
-
-        public void setSize(int s)
-        {
-            size = s;
-        }
-
         public void showBlock(int x, int y)
         {
-            if (x >= size || y >= size || x < 0 || y < 0 || grid[x, y].Bomb || grid[x,y].IsVisible )
+            Console.WriteLine("x="+x+" y="+y);
+
+            if (x >= size || y >= size || x < 0 || y < 0 || grid[x,y].Bomb || grid[x, y].IsVisible)
                 return;
 
+            Console.WriteLine("Made grid[" + x + "," + y + "] visible");
             grid[x, y].IsVisible = true;
+            
 
             if (grid[x,y].Number == 0)
             {
                 if (x + 1 < size)
+                {
                     showBlock(x + 1, y);
 
+                    if (y + 1 < size)
+                        showBlock(x + 1, y + 1);
+                    if (y - 1 > 0)
+                        showBlock(x + 1, y - 1);
+                }
+
                 if (x - 1 > 0)
+                {
                     showBlock(x - 1, y);
+
+                    if (y + 1 < size)
+                        showBlock(x - 1, y + 1);
+                    if (y - 1 > 0)
+                        showBlock(x - 1, y - 1);
+                }
+
 
                 if (y + 1 < size)
                     showBlock(x, y + 1);
 
                 if (y - 1 > 0)
                     showBlock(x, y - 1);
+
+            }
+        }
+
+        public void loseGame()
+        {
+            int i, j;
+
+            for (i = 0; i < size; i++)
+            {
+                for (j = 0; j < size; j++)
+                {
+                    if (grid[i,j].Bomb)
+                    {
+                        grid[i, j].IsVisible = true;
+                    }
+                }
             }
         }
 

@@ -47,17 +47,17 @@ namespace My_first_WinForms_app
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            game.setDifficulty(10);
+            game.Difficulty = 10;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            game.setDifficulty(20);
+            game.Difficulty = 20;
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            game.setDifficulty(30);
+            game.Difficulty = 30;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -70,7 +70,16 @@ namespace My_first_WinForms_app
             int mX = e.X / 20;
             int mY = e.Y / 20;
 
-            game.showBlock(mX,mY);
+            if (mY == game.Size)
+                mY--;
+            if (mX == game.Size)
+                mX--;
+
+            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY,mX].Bomb)
+                game.loseGame();
+
+
+            game.showBlock(mY,mX);
 
             Console.WriteLine("Clicked on x=" + mX + "  y=" + mY);
 
