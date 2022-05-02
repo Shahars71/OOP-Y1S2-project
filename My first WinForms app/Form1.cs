@@ -24,6 +24,28 @@ namespace My_first_WinForms_app
 
         }
 
+        public void DrawSmiley(Graphics g, int x, int y, int radius)
+        {
+            Brush br = new SolidBrush(Color.Yellow);
+            Brush brb = new SolidBrush(Color.Black);
+            Brush bl = new SolidBrush(Color.DeepPink);
+
+            Pen p = new Pen(Color.Black, radius / 50);
+            g.FillEllipse(br, new Rectangle(x, y, radius, radius));
+            //eyes
+            g.FillEllipse(brb, new Rectangle(x + radius / 5, y + radius / 4, radius / 10, radius / 10));
+            g.FillEllipse(brb, new Rectangle(x + radius / 2 + radius / 4, y + radius / 4, radius / 10, radius / 10));
+            //mouth
+            g.DrawArc(new Pen(Color.Black), new Rectangle(x + radius / 2, y + radius / 3, radius / 10, radius / 10), 0, 180);
+            //blush
+            g.FillEllipse(bl, new Rectangle(x + radius / 3 - radius / 5, y + radius / 3 + radius / 20, radius / 10, radius / 10));
+            g.FillEllipse(bl, new Rectangle(x + radius / 2 + radius / 3, y + radius / 3 + radius / 20, radius / 10, radius / 10));
+
+
+            //outline
+            g.DrawEllipse(p, new Rectangle(x, y, radius, radius));
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -89,6 +111,16 @@ namespace My_first_WinForms_app
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox2_Paint(object sender, PaintEventArgs e)
+        {
+            DrawSmiley(e.Graphics, 0, 0, pictureBox2.Width);
         }
     }
 }
