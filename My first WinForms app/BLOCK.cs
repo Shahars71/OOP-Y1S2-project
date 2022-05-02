@@ -65,6 +65,7 @@ namespace My_first_WinForms_app
 
         public BLOCK(int r, int c)
         {
+            pos = new position();
             pos.Row = r;
             pos.Col = c;
         }
@@ -83,7 +84,7 @@ namespace My_first_WinForms_app
             
         }
 
-        public abstract void Draw(Graphics g);
+        public abstract void Draw(Graphics g, int i, int j);
     }
 
     [Serializable]
@@ -123,10 +124,10 @@ namespace My_first_WinForms_app
             }
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g, int i, int j)
         {
             SolidBrush br = new SolidBrush(Color.Gray);
-            Pen p = new Pen(Color.Black,5);
+            Pen p = new Pen(Color.Black,1);
 
             if (isVisible)
             {
@@ -137,8 +138,8 @@ namespace My_first_WinForms_app
                 br.Color = Color.Red;
             }
 
-            g.FillRectangle(br, Pos.Col, Pos.Row, 5, 5);
-            g.DrawRectangle(p, Pos.Col, Pos.Row, 5, 5);
+            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 50, 50);
+            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 50, 50);
         }
     }
 
@@ -190,30 +191,37 @@ namespace My_first_WinForms_app
         {
             if (!bomb)
                 number++;
-        }
+        } 
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g, int i, int j)
         {
             SolidBrush br = new SolidBrush(Color.Gray);
-            Pen p = new Pen(Color.Black, 5);
+            Pen p = new Pen(Color.Black, 1);
+            String num = number.ToString();
+            Font font = new Font("Arial", 11 * 1.33f, FontStyle.Bold, GraphicsUnit.Pixel);
 
             switch (number) 
             {
                 case 1:
-                    br.Color = Color.Blue;
+                    if (IsVisible)
+                        br.Color = Color.Blue;
                     break;
                 case 2:
-                    br.Color = Color.Orange;
+                    if (IsVisible)
+                        br.Color = Color.Orange;
                     break;
                 case 3:
-                    br.Color = Color.DarkRed;
+                    if (IsVisible)
+                        br.Color = Color.DarkRed;
                     break;
                 default:
                     break;
             }
 
-            g.FillRectangle(br, Pos.Col, Pos.Row, 5, 5);
-            g.DrawRectangle(p, Pos.Col, Pos.Row, 5, 5);
+            g.FillRectangle(br, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
+            g.DrawRectangle(p, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
+            g.DrawString(num, font, br, new PointF(Pos.Col + j * 20, Pos.Row + i * 20));
+            
         }
 
     }
@@ -225,22 +233,26 @@ namespace My_first_WinForms_app
     {
         ActivatedBlock[,] grid;
         int difficulty;
+        int size;
 
         public GameGrid()
-            : this(5) { }
+            : this(30,20) { }
 
-        public GameGrid(int diff)
+        public GameGrid(int diff, int s)
         {
             difficulty = diff;
+            size = s;
 
-            grid = new ActivatedBlock[50,50];
+            grid = new ActivatedBlock[size,size];
 
             int i, j;
 
-            for (i=0;i<50;i++)
+            for (i=0;i<size;i++)
             {
-                for (j=0;j<50;j++)
+                for (j=0;j<size;j++)
                 {
+                    grid[i, j] = new ActivatedBlock();
+
                     grid[i, j].Pos.Row = i;
                     grid[i, j].Pos.Col = j;
                 }
@@ -252,44 +264,100 @@ namespace My_first_WinForms_app
             int rC, rR, i, j;
             Random gen = new Random();
 
-            for (i=0; i<= difficulty; i++)
+            for (i=0; i< difficulty; i++)
             {
-                rR = gen.Next() % 50;
-                rC = gen.Next() % 50;
+                rR = gen.Next() % size;
+                rC = gen.Next() % size;
 
                 grid[rR, rC].Bomb = true;
             }
 
-            if (grid[1, 0].Bomb && !grid[0,0].Bomb)
-                grid[0, 0].incrementNum();
+            
 
-            for (i=0; i<50; i++)
+            for (i=0; i<size; i++)
             {
-                for (j=1; j<50; j++)
+                if (i<size-1 && grid[i + 1, 0].Bomb && !grid[i, 0].Bomb)
+                    grid[i, 0].incrementNum();
+
+                if (i < size - 1 && grid[i, 0].Bomb && !grid[i+1,0].Bomb)
+                    grid[i + 1, 0].incrementNum();
+
+                for (j=1; j<size; j++)
                 {
-                    if (grid[i, j - 1].Bomb)
-                        grid[i, j].incrementNum();
+                    if (!grid[i, j].Bomb)
+                    {
 
-                    if (grid[i + 1, j - 1].Bomb)
-                        grid[i, j].incrementNum();
+                        if (grid[i, j - 1].Bomb)
+                            grid[i, j].incrementNum();
 
-                    if (grid[i + 1, j].Bomb)
-                        grid[i, j].incrementNum();
+                        if (i < size - 1 && grid[i + 1, j - 1].Bomb)
+                            grid[i, j].incrementNum();
+
+                        if (i < size - 1 && grid[i + 1, j].Bomb)
+                            grid[i, j].incrementNum();
+
+                        if (i > 0 && grid[i - 1, j].Bomb)
+                            grid[i, j].incrementNum();
+
+                        if (i > 0 && grid[i - 1, j - 1].Bomb)
+                            grid[i, j].incrementNum();
+
+                        if (j < size - 1 && grid[i, j + 1].Bomb)
+                            grid[i, j].incrementNum();
+
+                        if (i < size - 1 && j < size - 1 && grid[i + 1, j + 1].Bomb)
+                            grid[i, j].incrementNum();
+
+                        if (i > 0 && j < size - 1 && grid[i - 1, j + 1].Bomb)
+                            grid[i, j].incrementNum();
+                    }
+
                 }
             }
         }
 
+        public void setDifficulty(int diff)
+        {
+            difficulty = diff;
+        }
 
+        public void setSize(int s)
+        {
+            size = s;
+        }
+
+        public void showBlock(int x, int y)
+        {
+            if (x >= size || y >= size || grid[x, y].Bomb || grid[x,y].IsVisible || x < 0 || y < 0)
+                return;
+
+            grid[x, y].IsVisible = true;
+
+            if (grid[x,y].Number == 0)
+            {
+                if (x + 1 < size)
+                    showBlock(x + 1, y);
+
+                if (x - 1 > 0)
+                    showBlock(x - 1, y);
+
+                if (y + 1 < size)
+                    showBlock(x, y + 1);
+
+                if (y - 1 > 0)
+                    showBlock(x, y - 1);
+            }
+        }
 
         public void DrawGrid(Graphics g)
         {
             int i, j;
 
-            for (i=0;i<50;i++)
+            for (i=0;i<size;i++)
             {
-                for (j=0;j<50;j++)
+                for (j=0; j<size; j++)
                 {
-                    grid[i, j].Draw(g);
+                    grid[i, j].Draw(g, i, j);
                 }
             }
         }
