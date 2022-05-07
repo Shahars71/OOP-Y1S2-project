@@ -68,6 +68,7 @@ namespace My_first_WinForms_app
             pos = new position();
             pos.Row = r;
             pos.Col = c;
+            isVisible = false;
         }
 
         public position Pos
@@ -106,7 +107,6 @@ namespace My_first_WinForms_app
     public class GameBlock : BLOCK
     {
         bool hasFlag;
-        
 
         public GameBlock()
         {
@@ -141,8 +141,8 @@ namespace My_first_WinForms_app
                 br.Color = Color.Red;
             }
 
-            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 50, 50);
-            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 50, 50);
+            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
         }
         public override bool IsBomb()
         {
@@ -151,7 +151,7 @@ namespace My_first_WinForms_app
 
         public override int giveNum()
         {
-            return -1;
+            return 0;
         }
 
     }
@@ -210,8 +210,8 @@ namespace My_first_WinForms_app
         {
             SolidBrush br = new SolidBrush(Color.Gray);
             Pen p = new Pen(Color.Black, 1);
-            String num = number.ToString();
-            Font font = new Font("Arial", 11 * 1.33f, FontStyle.Bold, GraphicsUnit.Pixel);
+            //String num = number.ToString();
+            //Font font = new Font("Arial", 11 * 1.33f, FontStyle.Bold, GraphicsUnit.Pixel);
 
             switch (number) 
             {
@@ -238,7 +238,7 @@ namespace My_first_WinForms_app
 
             g.FillRectangle(br, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
             g.DrawRectangle(p, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
-            g.DrawString(num, font, br, new PointF(Pos.Col + j * 20, Pos.Row + i * 20));
+            //g.DrawString(num, font, br, new PointF(Pos.Col + j * 20, Pos.Row + i * 20));
 
         }
 
@@ -277,8 +277,11 @@ namespace My_first_WinForms_app
 
         public override void Draw(Graphics g, int i, int j)
         {
-            SolidBrush br = new SolidBrush(Color.Black);
-            Pen p = new Pen(Color.Red, 1);
+            SolidBrush br = new SolidBrush(Color.Gray);
+            Pen p = new Pen(Color.Black, 1);
+
+            if (IsVisible)
+                br.Color = Color.Black;
 
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
@@ -330,7 +333,7 @@ namespace My_first_WinForms_app
 
         public override void Draw(Graphics g, int i, int j)
         {
-            SolidBrush br = new SolidBrush(Color.White);
+            SolidBrush br = new SolidBrush(Color.Gray);
             Pen p = new Pen(Color.Black, 1);
 
             switch (num)
@@ -425,14 +428,14 @@ namespace My_first_WinForms_app
         }
 
         public GameGrid()
-            : this(30,20) { }
+            : this(40,21) { }
 
         public GameGrid(int diff, int s)
         {
             difficulty = diff;
             size = s;
 
-            grid = new BLOCK[size,size];
+            grid = new GameBlock[size,size];
 
             int i, j;
 
@@ -440,7 +443,7 @@ namespace My_first_WinForms_app
             {
                 for (j=0;j<size;j++)
                 {
-                    grid[i, j] = new BLOCK(i, j);
+                    grid[i, j] = new GameBlock();
                 }
             }
         }
@@ -454,11 +457,61 @@ namespace My_first_WinForms_app
             {
                 rR = gen.Next() % size;
                 rC = gen.Next() % size;
-
+                
                 grid[rR, rC] = new BombBlock();
             }
 
             
+                for (i = 0; i < size; i++)
+                {
+
+                    for (j = 1; j < size; j++)
+                    {
+                        if (grid[i, j].IsBomb())
+                        {
+                            if (j > 0)
+                            {
+                                grid[i, j - 1] = new NumBlock();
+                            }
+
+                            if (j < size - 1)
+                            {
+                                grid[i, j + 1] = new NumBlock();
+                            }
+
+                            if (i > 0)
+                            {
+                                grid[i - 1, j] = new NumBlock();
+
+                                if (j > 0)
+                                {
+                                    grid[i - 1, j - 1] = new NumBlock();
+                                }
+
+                                if (j < size - 1)
+                                {
+                                    grid[i - 1, j + 1] = new NumBlock();
+                                }
+                            }
+
+                            if (i < size - 1)
+                            {
+                                grid[i + 1, j] = new NumBlock();
+
+                                if (j > 0)
+                                {
+                                    grid[i + 1, j - 1] = new NumBlock();
+                                }
+
+                                if (j < size - 1)
+                                {
+                                    grid[i + 1, j + 1] = new NumBlock();
+                                }
+                            }
+                        }
+                    }
+                }
+
 
             for (i=0; i<size; i++)
             {
@@ -469,48 +522,40 @@ namespace My_first_WinForms_app
                     {
                         if (j > 0)
                         {
-                            grid[i, j - 1] = new NumBlock();
                             ((NumBlock)grid[i, j - 1]).IncrementNum();
                         }
 
                         if (j < size - 1)
                         {
-                            grid[i, j + 1] = new NumBlock();
                             ((NumBlock)grid[i, j + 1]).IncrementNum();
                         }
 
                         if (i > 0)
                         {
-                            grid[i-1, j] = new NumBlock();
                             ((NumBlock)grid[i - 1, j]).IncrementNum();
 
                             if (j > 0)
                             {
-                                grid[i - 1, j-1] = new NumBlock();
                                 ((NumBlock)grid[i - 1, j - 1]).IncrementNum();
                             }
 
                             if (j < size - 1)
                             {
-                                grid[i - 1, j+1] = new NumBlock();
                                 ((NumBlock)grid[i - 1, j + 1]).IncrementNum();
                             }
                         }
 
                         if (i < size - 1)
                         {
-                            grid[i + 1, j] = new NumBlock();
                             ((NumBlock)grid[i + 1, j]).IncrementNum();
 
                             if (j > 0)
                             {
-                                grid[i + 1, j-1] = new NumBlock();
                                 ((NumBlock)grid[i + 1, j - 1]).IncrementNum();
                             }
 
                             if (j < size - 1)
                             {
-                                grid[i + 1, j+1] = new NumBlock();
                                 ((NumBlock)grid[i + 1, j + 1]).IncrementNum();
                             }
                         }
@@ -549,15 +594,15 @@ namespace My_first_WinForms_app
                         showBlock(x - 1, y);
                     }
 
-                    if (y > 0 && !grid[x-1, y - 1].IsVisible)
-                    {
-                        showBlock(x - 1, y - 1);
-                    }
+                    //if (y > 0 && !grid[x-1, y - 1].IsVisible)
+                    //{
+                    //    showBlock(x - 1, y - 1);
+                    //}
 
-                    if (y < size - 1 && !grid[x - 1, y + 1].IsVisible)
-                    {
-                        showBlock(x - 1, y + 1);
-                    }
+                    //if (y < size - 1 && !grid[x - 1, y + 1].IsVisible)
+                    //{
+                    //    showBlock(x - 1, y + 1);
+                    //}
                 }
 
                 if (x < size - 1)
@@ -568,15 +613,15 @@ namespace My_first_WinForms_app
                         showBlock(x + 1, y);
                     }
 
-                    if (y > 0 && !grid[x + 1, y - 1].IsVisible)
-                    {
-                        showBlock(x + 1, y - 1);
-                    }
+                    //if (y > 0 && !grid[x + 1, y - 1].IsVisible)
+                    //{
+                    //    showBlock(x + 1, y - 1);
+                    //}
 
-                    if (y < size - 1 && !grid[x + 1, y + 1].IsVisible)
-                    {
-                        showBlock(x + 1, y + 1);
-                    }
+                    //if (y < size - 1 && !grid[x + 1, y + 1].IsVisible)
+                    //{
+                    //    showBlock(x + 1, y + 1);
+                    //}
                 }
             }
         }
