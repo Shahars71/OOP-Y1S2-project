@@ -97,7 +97,7 @@ namespace My_first_WinForms_app
             if (mX == game.Size)
                 mX--;
 
-            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY,mX].Bomb)
+            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY,mX].IsBomb())
                 game.loseGame();
 
 

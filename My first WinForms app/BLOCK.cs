@@ -58,7 +58,7 @@ namespace My_first_WinForms_app
     public abstract class BLOCK
     {
         position pos;
-
+        bool isVisible;
         public BLOCK()
             :this(0,0)
         { }
@@ -84,7 +84,21 @@ namespace My_first_WinForms_app
             
         }
 
+        public bool IsVisible
+        {
+            get
+            {
+                return isVisible;
+            }
+            set
+            {
+                isVisible = value;
+            }
+        }
+
         public abstract void Draw(Graphics g, int i, int j);
+        public abstract bool IsBomb();
+        public abstract int giveNum();
     }
 
     [Serializable]
@@ -92,12 +106,11 @@ namespace My_first_WinForms_app
     public class GameBlock : BLOCK
     {
         bool hasFlag;
-        bool isVisible;
+        
 
         public GameBlock()
         {
             hasFlag = false;
-            isVisible = false;
         }
 
         public bool HasFlag
@@ -112,24 +125,14 @@ namespace My_first_WinForms_app
             }
         }
 
-        public bool IsVisible
-        {
-            get
-            {
-                return isVisible;
-            }
-            set
-            {
-                isVisible = value;
-            }
-        }
+        
 
         public override void Draw(Graphics g, int i, int j)
         {
             SolidBrush br = new SolidBrush(Color.Gray);
             Pen p = new Pen(Color.Black,1);
 
-            if (isVisible)
+            if (IsVisible)
             {
                 br.Color = Color.White;
             }
@@ -141,6 +144,16 @@ namespace My_first_WinForms_app
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 50, 50);
             g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 50, 50);
         }
+        public override bool IsBomb()
+        {
+            return false;
+        }
+
+        public override int giveNum()
+        {
+            return -1;
+        }
+
     }
 
     [Serializable]
@@ -226,17 +239,156 @@ namespace My_first_WinForms_app
             g.FillRectangle(br, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
             g.DrawRectangle(p, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
             g.DrawString(num, font, br, new PointF(Pos.Col + j * 20, Pos.Row + i * 20));
-            
+
         }
 
     }
 
+    [Serializable]
+    public class BombBlock : GameBlock
+    {
+        bool bomb;
+        public BombBlock()
+        {
+            bomb = true;
+        }
+
+        public bool Bomb
+        {
+            get
+            {
+                return bomb;
+            }
+            set
+            {
+                bomb = value;
+            }
+        }
+
+        public override bool IsBomb()
+        {
+            return true;
+        }
+
+        public override int giveNum()
+        {
+            return -1;
+        }
+
+        public override void Draw(Graphics g, int i, int j)
+        {
+            SolidBrush br = new SolidBrush(Color.Black);
+            Pen p = new Pen(Color.Red, 1);
+
+            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+        }
+    }
+
+    [Serializable]
+    public class NumBlock : GameBlock
+    {
+        int num;
+
+        public NumBlock()
+            : this(0) {}
+
+        public NumBlock(int n)
+        {
+            num = n;
+        }
+
+        public int Num
+        {
+            get
+            {
+                return num;
+            }
+
+            set
+            {
+                num = value;
+            }
+
+        }
+
+        public void IncrementNum()
+        {
+            if (!IsBomb())
+                num++;
+        }
+
+        public override bool IsBomb()
+        {
+            return false;
+        }
+
+        public override int giveNum()
+        {
+            return num;
+        }
+
+        public override void Draw(Graphics g, int i, int j)
+        {
+            SolidBrush br = new SolidBrush(Color.White);
+            Pen p = new Pen(Color.Black, 1);
+
+            switch (num)
+            {
+                case 1:
+                    if (IsVisible)
+                        br.Color = Color.Blue;
+                    break;
+                case 2:
+                    if (IsVisible)
+                        br.Color = Color.Green;
+                    break;
+                case 3:
+                    if (IsVisible)
+                        br.Color = Color.Red;
+                    break;
+
+                case 4:
+                    if (IsVisible)
+                        br.Color = Color.DarkBlue;
+                    break;
+
+                case 5:
+                    if (IsVisible)
+                        br.Color = Color.DarkRed;
+                    break;
+
+                case 6:
+                    if (IsVisible)
+                        br.Color = Color.DarkTurquoise;
+                    break;
+
+                case 7:
+                    if (IsVisible)
+                        br.Color = Color.HotPink;
+                    break;
+
+                case 8:
+                    if (IsVisible)
+                        br.Color = Color.Purple;
+                    break;
+
+                default:
+                    if (IsVisible)
+                        br.Color = Color.White;
+                    break;
+            }
+
+            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+        }
+    }
 
     [Serializable]
 
     public class GameGrid
     {
-        ActivatedBlock[,] grid;
+        BLOCK [,] grid;
         int difficulty;
         int size;
 
@@ -266,7 +418,7 @@ namespace My_first_WinForms_app
             }
         }
 
-        public ActivatedBlock this[int x,int y]
+        public BLOCK this[int x,int y]
         {
             get => grid[x, y];
             set => grid[x, y] = value;
@@ -280,7 +432,7 @@ namespace My_first_WinForms_app
             difficulty = diff;
             size = s;
 
-            grid = new ActivatedBlock[size,size];
+            grid = new BLOCK[size,size];
 
             int i, j;
 
@@ -288,10 +440,7 @@ namespace My_first_WinForms_app
             {
                 for (j=0;j<size;j++)
                 {
-                    grid[i, j] = new ActivatedBlock();
-
-                    grid[i, j].Pos.Row = i;
-                    grid[i, j].Pos.Col = j;
+                    grid[i, j] = new BLOCK(i, j);
                 }
             }
         }
@@ -306,49 +455,66 @@ namespace My_first_WinForms_app
                 rR = gen.Next() % size;
                 rC = gen.Next() % size;
 
-                grid[rR, rC].Bomb = true;
+                grid[rR, rC] = new BombBlock();
             }
 
             
 
             for (i=0; i<size; i++)
             {
-                if (i<size-1 && grid[i + 1, 0].Bomb && !grid[i, 0].Bomb)
-                    grid[i, 0].incrementNum();
-
-                if (i < size - 1 && grid[i, 0].Bomb && !grid[i+1,0].Bomb)
-                    grid[i + 1, 0].incrementNum();
 
                 for (j=1; j<size; j++)
                 {
-                    if (!grid[i, j].Bomb)
+                    if (grid[i,j].IsBomb())
                     {
+                        if (j > 0)
+                        {
+                            grid[i, j - 1] = new NumBlock();
+                            ((NumBlock)grid[i, j - 1]).IncrementNum();
+                        }
 
-                        if (grid[i, j - 1].Bomb)
-                            grid[i, j].incrementNum();
+                        if (j < size - 1)
+                        {
+                            grid[i, j + 1] = new NumBlock();
+                            ((NumBlock)grid[i, j + 1]).IncrementNum();
+                        }
 
-                        if (i < size - 1 && grid[i + 1, j - 1].Bomb)
-                            grid[i, j].incrementNum();
+                        if (i > 0)
+                        {
+                            grid[i-1, j] = new NumBlock();
+                            ((NumBlock)grid[i - 1, j]).IncrementNum();
 
-                        if (i < size - 1 && grid[i + 1, j].Bomb)
-                            grid[i, j].incrementNum();
+                            if (j > 0)
+                            {
+                                grid[i - 1, j-1] = new NumBlock();
+                                ((NumBlock)grid[i - 1, j - 1]).IncrementNum();
+                            }
 
-                        if (i > 0 && grid[i - 1, j].Bomb)
-                            grid[i, j].incrementNum();
+                            if (j < size - 1)
+                            {
+                                grid[i - 1, j+1] = new NumBlock();
+                                ((NumBlock)grid[i - 1, j + 1]).IncrementNum();
+                            }
+                        }
 
-                        if (i > 0 && grid[i - 1, j - 1].Bomb)
-                            grid[i, j].incrementNum();
+                        if (i < size - 1)
+                        {
+                            grid[i + 1, j] = new NumBlock();
+                            ((NumBlock)grid[i + 1, j]).IncrementNum();
 
-                        if (j < size - 1 && grid[i, j + 1].Bomb)
-                            grid[i, j].incrementNum();
+                            if (j > 0)
+                            {
+                                grid[i + 1, j-1] = new NumBlock();
+                                ((NumBlock)grid[i + 1, j - 1]).IncrementNum();
+                            }
 
-                        if (i < size - 1 && j < size - 1 && grid[i + 1, j + 1].Bomb)
-                            grid[i, j].incrementNum();
-
-                        if (i > 0 && j < size - 1 && grid[i - 1, j + 1].Bomb)
-                            grid[i, j].incrementNum();
+                            if (j < size - 1)
+                            {
+                                grid[i + 1, j+1] = new NumBlock();
+                                ((NumBlock)grid[i + 1, j + 1]).IncrementNum();
+                            }
+                        }
                     }
-
                 }
             }
         }
@@ -357,42 +523,61 @@ namespace My_first_WinForms_app
         {
             Console.WriteLine("x="+x+" y="+y);
 
-            if (x >= size || y >= size || x < 0 || y < 0 || grid[x,y].Bomb || grid[x, y].IsVisible)
+            if (x >= size || y >= size || x < 0 || y < 0 || grid[x,y].IsBomb() || grid[x, y].IsVisible)
                 return;
 
             Console.WriteLine("Made grid[" + x + "," + y + "] visible");
-            grid[x, y].IsVisible = true;
+            (grid[x, y]).IsVisible = true;
             
 
-            if (grid[x,y].Number == 0)
+            if (grid[x,y].giveNum() == 0)
             {
-                if (x + 1 < size)
+                if (y > 0 && !grid[x,y-1].IsVisible)
                 {
-                    showBlock(x + 1, y);
-
-                    if (y + 1 < size)
-                        showBlock(x + 1, y + 1);
-                    if (y - 1 > 0)
-                        showBlock(x + 1, y - 1);
-                }
-
-                if (x - 1 > 0)
-                {
-                    showBlock(x - 1, y);
-
-                    if (y + 1 < size)
-                        showBlock(x - 1, y + 1);
-                    if (y - 1 > 0)
-                        showBlock(x - 1, y - 1);
-                }
-
-
-                if (y + 1 < size)
-                    showBlock(x, y + 1);
-
-                if (y - 1 > 0)
                     showBlock(x, y - 1);
+                }
 
+                if (y < size - 1 && !grid[x, y + 1].IsVisible)
+                {
+                    showBlock(x, y + 1);
+                }
+
+                if (x > 0)
+                {
+                    if (!grid[x - 1, y].IsVisible)
+                    {
+                        showBlock(x - 1, y);
+                    }
+
+                    if (y > 0 && !grid[x-1, y - 1].IsVisible)
+                    {
+                        showBlock(x - 1, y - 1);
+                    }
+
+                    if (y < size - 1 && !grid[x - 1, y + 1].IsVisible)
+                    {
+                        showBlock(x - 1, y + 1);
+                    }
+                }
+
+                if (x < size - 1)
+                {
+
+                    if (!grid[x + 1, y].IsVisible)
+                    {
+                        showBlock(x + 1, y);
+                    }
+
+                    if (y > 0 && !grid[x + 1, y - 1].IsVisible)
+                    {
+                        showBlock(x + 1, y - 1);
+                    }
+
+                    if (y < size - 1 && !grid[x + 1, y + 1].IsVisible)
+                    {
+                        showBlock(x + 1, y + 1);
+                    }
+                }
             }
         }
 
@@ -404,7 +589,7 @@ namespace My_first_WinForms_app
             {
                 for (j = 0; j < size; j++)
                 {
-                    if (grid[i,j].Bomb)
+                    if (grid[i,j].IsBomb())
                     {
                         grid[i, j].IsVisible = true;
                     }
