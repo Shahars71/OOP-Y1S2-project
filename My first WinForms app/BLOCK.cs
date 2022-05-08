@@ -59,6 +59,7 @@ namespace My_first_WinForms_app
     {
         position pos;
         bool isVisible;
+        Image img;
         public BLOCK()
             :this(0,0)
         { }
@@ -69,6 +70,7 @@ namespace My_first_WinForms_app
             pos.Row = r;
             pos.Col = c;
             isVisible = false;
+            img = Image.FromFile("Sprites\\block.png");
         }
 
         public position Pos
@@ -94,6 +96,20 @@ namespace My_first_WinForms_app
             set
             {
                 isVisible = value;
+            }
+        }
+
+        public Image Img 
+        {
+
+            get
+            {
+                return img;
+            }
+
+            set
+            {
+                img = value;
             }
         }
 
@@ -134,7 +150,7 @@ namespace My_first_WinForms_app
 
             if (IsVisible)
             {
-                br.Color = Color.White;
+                this.Img = Image.FromFile("Sprites\\blockvis.png");
             }
             else if (hasFlag)
             {
@@ -142,7 +158,8 @@ namespace My_first_WinForms_app
             }
 
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
-            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
         }
         public override bool IsBomb()
         {
@@ -281,10 +298,11 @@ namespace My_first_WinForms_app
             Pen p = new Pen(Color.Black, 1);
 
             if (IsVisible)
-                br.Color = Color.Black;
+                this.Img = Image.FromFile("Sprites\\blockBomb.png");
 
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
-            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
         }
     }
 
@@ -340,50 +358,51 @@ namespace My_first_WinForms_app
             {
                 case 1:
                     if (IsVisible)
-                        br.Color = Color.Blue;
+                        this.Img = Image.FromFile("Sprites\\1.png");
                     break;
                 case 2:
                     if (IsVisible)
-                        br.Color = Color.Green;
+                        this.Img = Image.FromFile("Sprites\\2.png");
                     break;
                 case 3:
                     if (IsVisible)
-                        br.Color = Color.Red;
+                        this.Img = Image.FromFile("Sprites\\3.png");
                     break;
 
                 case 4:
                     if (IsVisible)
-                        br.Color = Color.DarkBlue;
+                        this.Img = Image.FromFile("Sprites\\4.png");
                     break;
 
                 case 5:
                     if (IsVisible)
-                        br.Color = Color.DarkRed;
+                        this.Img = Image.FromFile("Sprites\\5.png");
                     break;
 
                 case 6:
                     if (IsVisible)
-                        br.Color = Color.DarkTurquoise;
+                        this.Img = Image.FromFile("Sprites\\6.png");
                     break;
 
                 case 7:
                     if (IsVisible)
-                        br.Color = Color.HotPink;
+                        this.Img = Image.FromFile("Sprites\\7.png");
                     break;
 
                 case 8:
                     if (IsVisible)
-                        br.Color = Color.Purple;
+                        this.Img = Image.FromFile("Sprites\\8.png");
                     break;
 
                 default:
                     if (IsVisible)
-                        br.Color = Color.White;
+                        this.Img = Image.FromFile("Sprites\\blockvis.png");
                     break;
             }
 
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
-            g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
+            g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
         }
     }
 
