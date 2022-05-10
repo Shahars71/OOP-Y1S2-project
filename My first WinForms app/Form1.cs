@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace My_first_WinForms_app
 {
@@ -15,11 +18,16 @@ namespace My_first_WinForms_app
     {
         GameGrid game;
         Graphics g;
+        int diff;
+        bool gameOver;
         public Form1()
         {
             InitializeComponent();
 
-            game = new GameGrid();
+            diff = 40;
+            gameOver = false;
+
+            game = new GameGrid(diff);
             game.initGame();
 
         }
@@ -64,22 +72,25 @@ namespace My_first_WinForms_app
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //game.initGame();
+            gameOver = false;
+            game.redoGame();
+            game.initGame();
+            pictureBox1.Invalidate();
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            game.Difficulty = 10;
+            game.Difficulty = 20;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            game.Difficulty = 20;
+            game.Difficulty = 40;
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            game.Difficulty = 30;
+            game.Difficulty = 80;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -97,11 +108,14 @@ namespace My_first_WinForms_app
             if (mX == game.Size)
                 mX--;
 
-            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY,mX].IsBomb())
+            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY, mX].IsBomb())
+            {
                 game.loseGame();
+                gameOver = true;
+            }
 
-
-            game.showBlock(mY,mX);
+            if (!gameOver)
+                game.showBlock(mY,mX);
 
             Console.WriteLine("Clicked on x=" + mX + "  y=" + mY);
 
@@ -121,6 +135,41 @@ namespace My_first_WinForms_app
         private void pictureBox2_Paint(object sender, PaintEventArgs e)
         {
             DrawSmiley(e.Graphics, 0, 0, pictureBox2.Width);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();// + "..\\myModels";
+            saveFileDialog1.Filter = "minesweeper files (*.msw)|*.msw|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                IFormatter formatter = new BinaryFormatter();
+                using (Stream stream = new FileStream(saveFileDialog1.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    //!!!!
+                    formatter.Serialize(stream, game);
+                }
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();// + "..\\myModels";
+            openFileDialog1.Filter = "minesweep files (*.msw)|*.msw|All files (*.*)|*.*";
+            openFileDialog1.FilterIndex = 1;
+            openFileDialog1.RestoreDirectory = true;
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Stream stream = File.Open(openFileDialog1.FileName, FileMode.Open);
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                //!!!!
+                game = (GameGrid)binaryFormatter.Deserialize(stream);
+                pictureBox1.Invalidate();
+            }
         }
     }
 }

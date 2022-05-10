@@ -449,6 +449,9 @@ namespace My_first_WinForms_app
         public GameGrid()
             : this(40,21) { }
 
+        public GameGrid(int diff)
+            : this(diff, 21) { }
+
         public GameGrid(int diff, int s)
         {
             difficulty = diff;
@@ -579,6 +582,19 @@ namespace My_first_WinForms_app
                             }
                         }
                     }
+                }
+            }
+        }
+
+        public void redoGame()
+        {
+            int i, j;
+
+            for (i=0;i<size;i++)
+            {
+                for (j=0;j<size;j++)
+                {
+                    grid[i,j] = new GameBlock();
                 }
             }
         }
