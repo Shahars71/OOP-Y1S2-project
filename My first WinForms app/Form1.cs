@@ -21,12 +21,14 @@ namespace My_first_WinForms_app
         int diff;
         bool gameOver;
         VisBlock Smiley;
+        bool getClicks;
         public Form1()
         {
             InitializeComponent();
 
-            diff = 40;
+            diff = 10;
             gameOver = false;
+            getClicks = true;
 
             Smiley = new VisBlock();
             game = new GameGrid(diff);
@@ -56,6 +58,7 @@ namespace My_first_WinForms_app
         {
             button1.Text = "Started!";
             gameOver = false;
+            getClicks = true;
             game.redoGame();
             Smiley.LostGame = false;
             pictureBox2.Invalidate();
@@ -95,7 +98,7 @@ namespace My_first_WinForms_app
             if (mX == game.Size)
                 mX--;
 
-            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY, mX].IsBomb() && e.Button.ToString() == "Left")
+            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY, mX].IsBomb() && e.Button.ToString() == "Left" && !gameOver && getClicks)
             {
                 game.loseGame();
                 gameOver = true;
@@ -103,17 +106,18 @@ namespace My_first_WinForms_app
                 button1.Text = "Start Game";
             }
 
-            if (!gameOver && e.Button.ToString() == "Left")
+            if (!gameOver && e.Button.ToString() == "Left" && getClicks)
                 game.showBlock(mY,mX);
-            if (!gameOver && e.Button.ToString() == "Right" && !((GameBlock)game[mY, mX]).HasFlag && !game[mY, mX].IsVisible)
+            if (!gameOver && e.Button.ToString() == "Right" && !((GameBlock)game[mY, mX]).HasFlag && !game[mY, mX].IsVisible && getClicks)
             {
                 game.Flag(mY, mX, true);
                 if (game.winGame())
                 {
                     gameOver = true;
+                    button1.Text = "Start Game";
                 }
             }
-            else if (!gameOver && e.Button.ToString() == "Right" && ((GameBlock)game[mY, mX]).HasFlag)
+            else if (!gameOver && e.Button.ToString() == "Right" && ((GameBlock)game[mY, mX]).HasFlag && getClicks)
                 game.Flag(mY, mX, false);
 
             //Console.WriteLine("Clicked on x=" + mX + "  y=" + mY);
@@ -121,10 +125,16 @@ namespace My_first_WinForms_app
             pictureBox1.Invalidate();
             pictureBox2.Invalidate();
 
-            if (gameOver && Smiley.LostGame)
+            if (gameOver && Smiley.LostGame && getClicks)
+            {
                 MessageBox.Show("You Lose!");
-            if (gameOver && !Smiley.LostGame)
+                getClicks = false;
+            }
+            if (gameOver && !Smiley.LostGame && getClicks)
+            {
                 MessageBox.Show("You Win!");
+                getClicks = false;
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
