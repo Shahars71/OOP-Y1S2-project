@@ -26,7 +26,7 @@ namespace My_first_WinForms_app
         {
             InitializeComponent();
 
-            diff = 10;
+            diff = 20;
             gameOver = false;
             getClicks = true;
 
