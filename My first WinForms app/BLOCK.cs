@@ -116,7 +116,68 @@ namespace My_first_WinForms_app
         public abstract void Draw(Graphics g, int i, int j);
         public abstract bool IsBomb();
         public abstract int giveNum();
+
+        public abstract void changeFlag(bool cond);
     }
+
+    [Serializable]
+
+    public class VisBlock : BLOCK
+    {
+        bool lostGame;
+
+        public VisBlock()
+            :this(false) { }
+
+        public VisBlock(bool cond)
+        {
+            Pos = new position();
+            Pos.Row = 0;
+            Pos.Col = 0;
+            IsVisible = false;
+            Img = Image.FromFile("Sprites\\happySmile.png");
+        }
+            
+
+        public bool LostGame
+        {
+            get
+            {
+                return lostGame;
+            }
+
+            set
+            {
+                lostGame = value;
+            }
+        }
+
+        public override void Draw(Graphics g, int i, int j)
+        {
+            if (lostGame)
+            {
+                Img = Image.FromFile("Sprites\\deadSmile.png");
+            }
+
+            if (!lostGame)
+                Img = Image.FromFile("Sprites\\happySmile.png");
+
+            g.DrawImage(this.Img, 0, 0);
+        }
+
+        public override int giveNum()
+        {
+            return -1;
+        }
+
+        public override bool IsBomb()
+        {
+            return false;
+        }
+
+        public override void changeFlag(bool cond) { }
+    }
+
 
     [Serializable]
 
@@ -148,14 +209,17 @@ namespace My_first_WinForms_app
             SolidBrush br = new SolidBrush(Color.Gray);
             Pen p = new Pen(Color.Black,1);
 
+
             if (IsVisible)
             {
                 this.Img = Image.FromFile("Sprites\\blockvis.png");
             }
             else if (hasFlag)
             {
-                br.Color = Color.Red;
+                this.Img = Image.FromFile("Sprites\\flagGreen.png");
             }
+            else this.Img = Image.FromFile("Sprites\\block.png");
+
 
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
@@ -171,6 +235,10 @@ namespace My_first_WinForms_app
             return 0;
         }
 
+        public override void changeFlag(bool cond) 
+        {
+            hasFlag = cond;
+        }
     }
 
     [Serializable]
@@ -299,11 +367,15 @@ namespace My_first_WinForms_app
 
             if (IsVisible)
                 this.Img = Image.FromFile("Sprites\\blockBomb.png");
+            else if (HasFlag)
+                this.Img = Image.FromFile("Sprites\\flagRed.png");
+            else this.Img = Image.FromFile("Sprites\\block.png");
 
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
         }
+
     }
 
     [Serializable]
@@ -400,6 +472,11 @@ namespace My_first_WinForms_app
                     break;
             }
 
+            if (HasFlag && !IsVisible)
+                this.Img = Image.FromFile("Sprites\\flagGreen.png");
+            else if (!HasFlag && !IsVisible)
+                this.Img = Image.FromFile("Sprites\\block.png");
+
             g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
@@ -413,6 +490,8 @@ namespace My_first_WinForms_app
         BLOCK [,] grid;
         int difficulty;
         int size;
+        int flagCount;
+        BombBlock[] bombs;
 
         public int Difficulty
         {
@@ -440,6 +519,19 @@ namespace My_first_WinForms_app
             }
         }
 
+        public int FlagCount
+        {
+            get
+            {
+                return flagCount;
+            }
+
+            set
+            {
+                size = value;
+            }
+        }
+
         public BLOCK this[int x,int y]
         {
             get => grid[x, y];
@@ -455,7 +547,9 @@ namespace My_first_WinForms_app
         public GameGrid(int diff, int s)
         {
             difficulty = diff;
+            flagCount = diff;
             size = s;
+            bombs = new BombBlock[diff];
 
             grid = new GameBlock[size,size];
 
@@ -481,6 +575,8 @@ namespace My_first_WinForms_app
                 rC = gen.Next() % size;
                 
                 grid[rR, rC] = new BombBlock();
+
+                bombs[i] = (BombBlock)grid[rR, rC];
             }
 
             
@@ -601,12 +697,12 @@ namespace My_first_WinForms_app
 
         public void showBlock(int x, int y)
         {
-            Console.WriteLine("x="+x+" y="+y);
+            //Console.WriteLine("x="+x+" y="+y);
 
             if (x >= size || y >= size || x < 0 || y < 0 || grid[x,y].IsBomb() || grid[x, y].IsVisible)
                 return;
 
-            Console.WriteLine("Made grid[" + x + "," + y + "] visible");
+            //Console.WriteLine("Made grid[" + x + "," + y + "] visible");
             (grid[x, y]).IsVisible = true;
             
 
@@ -688,6 +784,31 @@ namespace My_first_WinForms_app
                     grid[i, j].Draw(g, i, j);
                 }
             }
+        }
+
+        public void Flag(int i, int j, bool cond)
+        {
+            ((GameBlock)grid[i, j]).changeFlag(cond);
+
+            //if (((GameBlock)grid[i, j]).HasFlag)
+            //{
+            //    if (((GameBlock)grid[i, j]).IsBomb())
+            //        flagCount--;
+            //}
+            //else   if (((GameBlock)grid[i, j]).IsBomb()) flagCount++;
+        }
+
+        public bool winGame()
+        {
+            int i;
+
+            for (i=0;i < difficulty; i++)
+            {
+                if (!bombs[i].HasFlag)
+                    return false;
+            }
+
+            return true;
         }
     }
 

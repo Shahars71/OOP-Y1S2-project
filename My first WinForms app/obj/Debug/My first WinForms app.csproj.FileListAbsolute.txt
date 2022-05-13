@@ -8,3 +8,13 @@ C:\Users\User\source\repos\My first WinForms app\My first WinForms app\obj\Debug
 C:\Users\User\source\repos\My first WinForms app\My first WinForms app\obj\Debug\My first WinForms app.exe
 C:\Users\User\source\repos\My first WinForms app\My first WinForms app\obj\Debug\My first WinForms app.pdb
 C:\Users\User\source\repos\My first WinForms app\My first WinForms app\obj\Debug\My_first_WinForms_app.Form1.resources
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\bin\Debug\My first WinForms app.exe.config
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\bin\Debug\My first WinForms app.exe
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\bin\Debug\My first WinForms app.pdb
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\obj\Debug\My first WinForms app.csproj.AssemblyReference.cache
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\obj\Debug\My_first_WinForms_app.Form1.resources
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\obj\Debug\My_first_WinForms_app.Properties.Resources.resources
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\obj\Debug\My first WinForms app.csproj.GenerateResource.cache
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\obj\Debug\My first WinForms app.csproj.CoreCompileInputs.cache
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\obj\Debug\My first WinForms app.exe
+C:\Users\Mor\source\repos\Winforms Project 1\My first WinForms app\obj\Debug\My first WinForms app.pdb

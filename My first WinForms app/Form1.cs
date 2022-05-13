@@ -20,6 +20,7 @@ namespace My_first_WinForms_app
         Graphics g;
         int diff;
         bool gameOver;
+        VisBlock Smiley;
         public Form1()
         {
             InitializeComponent();
@@ -27,32 +28,13 @@ namespace My_first_WinForms_app
             diff = 40;
             gameOver = false;
 
+            Smiley = new VisBlock();
             game = new GameGrid(diff);
             game.initGame();
 
         }
 
-        public void DrawSmiley(Graphics g, int x, int y, int radius)
-        {
-            Brush br = new SolidBrush(Color.Yellow);
-            Brush brb = new SolidBrush(Color.Black);
-            Brush bl = new SolidBrush(Color.DeepPink);
 
-            Pen p = new Pen(Color.Black, radius / 50);
-            g.FillEllipse(br, new Rectangle(x, y, radius, radius));
-            //eyes
-            g.FillEllipse(brb, new Rectangle(x + radius / 5, y + radius / 4, radius / 10, radius / 10));
-            g.FillEllipse(brb, new Rectangle(x + radius / 2 + radius / 4, y + radius / 4, radius / 10, radius / 10));
-            //mouth
-            g.DrawArc(new Pen(Color.Black), new Rectangle(x + radius / 2, y + radius / 3, radius / 10, radius / 10), 0, 180);
-            //blush
-            g.FillEllipse(bl, new Rectangle(x + radius / 3 - radius / 5, y + radius / 3 + radius / 20, radius / 10, radius / 10));
-            g.FillEllipse(bl, new Rectangle(x + radius / 2 + radius / 3, y + radius / 3 + radius / 20, radius / 10, radius / 10));
-
-
-            //outline
-            g.DrawEllipse(p, new Rectangle(x, y, radius, radius));
-        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -72,10 +54,14 @@ namespace My_first_WinForms_app
 
         private void button1_Click(object sender, EventArgs e)
         {
+            button1.Text = "Started!";
             gameOver = false;
             game.redoGame();
+            Smiley.LostGame = false;
+            pictureBox2.Invalidate();
             game.initGame();
             pictureBox1.Invalidate();
+            
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -100,6 +86,7 @@ namespace My_first_WinForms_app
 
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
+            
             int mX = e.X / 20;
             int mY = e.Y / 20;
 
@@ -108,18 +95,36 @@ namespace My_first_WinForms_app
             if (mX == game.Size)
                 mX--;
 
-            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY, mX].IsBomb())
+            if (mY < game.Size && mY >= 0 && mX < game.Size && mX >= 0 && game[mY, mX].IsBomb() && e.Button.ToString() == "Left")
             {
                 game.loseGame();
                 gameOver = true;
+                Smiley.LostGame = true;
+                button1.Text = "Start Game";
             }
 
-            if (!gameOver)
+            if (!gameOver && e.Button.ToString() == "Left")
                 game.showBlock(mY,mX);
+            if (!gameOver && e.Button.ToString() == "Right" && !((GameBlock)game[mY, mX]).HasFlag && !game[mY, mX].IsVisible)
+            {
+                game.Flag(mY, mX, true);
+                if (game.winGame())
+                {
+                    gameOver = true;
+                }
+            }
+            else if (!gameOver && e.Button.ToString() == "Right" && ((GameBlock)game[mY, mX]).HasFlag)
+                game.Flag(mY, mX, false);
 
-            Console.WriteLine("Clicked on x=" + mX + "  y=" + mY);
+            //Console.WriteLine("Clicked on x=" + mX + "  y=" + mY);
 
             pictureBox1.Invalidate();
+            pictureBox2.Invalidate();
+
+            if (gameOver && Smiley.LostGame)
+                MessageBox.Show("You Lose!");
+            if (gameOver && !Smiley.LostGame)
+                MessageBox.Show("You Win!");
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -134,7 +139,8 @@ namespace My_first_WinForms_app
 
         private void pictureBox2_Paint(object sender, PaintEventArgs e)
         {
-            DrawSmiley(e.Graphics, 0, 0, pictureBox2.Width);
+            g = e.Graphics;
+            Smiley.Draw(g, 0, 0);
         }
 
         private void button2_Click(object sender, EventArgs e)
