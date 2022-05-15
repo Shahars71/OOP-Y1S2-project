@@ -22,6 +22,7 @@ namespace My_first_WinForms_app
         bool gameOver;
         VisBlock Smiley;
         bool getClicks;
+        int tickrate;
         public Form1()
         {
             InitializeComponent();
@@ -29,6 +30,8 @@ namespace My_first_WinForms_app
             diff = 20;
             gameOver = false;
             getClicks = true;
+            tickrate = 0;
+            label1.Text = "0";
 
             Smiley = new VisBlock();
             game = new GameGrid(diff);
@@ -59,6 +62,7 @@ namespace My_first_WinForms_app
             button1.Text = "Started!";
             gameOver = false;
             getClicks = true;
+            tickrate = -1;
             game.redoGame();
             Smiley.LostGame = false;
             pictureBox2.Invalidate();
@@ -127,12 +131,12 @@ namespace My_first_WinForms_app
 
             if (gameOver && Smiley.LostGame && getClicks)
             {
-                MessageBox.Show("You Lose!");
+                MessageBox.Show("You Lose!\nTime: " + tickrate + " seconds");
                 getClicks = false;
             }
             if (gameOver && !Smiley.LostGame && getClicks)
             {
-                MessageBox.Show("You Win!");
+                MessageBox.Show("You Win!\nTime: " + tickrate + " seconds");
                 getClicks = false;
             }
         }
@@ -186,6 +190,18 @@ namespace My_first_WinForms_app
                 game = (GameGrid)binaryFormatter.Deserialize(stream);
                 pictureBox1.Invalidate();
             }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if(!gameOver)
+                tickrate++;
+            label1.Text = tickrate.ToString();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

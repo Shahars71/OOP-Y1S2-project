@@ -29,6 +29,7 @@ namespace My_first_WinForms_app
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
@@ -37,6 +38,8 @@ namespace My_first_WinForms_app
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -59,7 +62,7 @@ namespace My_first_WinForms_app
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.button1.Location = new System.Drawing.Point(493, 331);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(218, 63);
+            this.button1.Size = new System.Drawing.Size(224, 63);
             this.button1.TabIndex = 1;
             this.button1.Text = "Started!";
             this.button1.UseVisualStyleBackColor = true;
@@ -68,9 +71,10 @@ namespace My_first_WinForms_app
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(502, 207);
+            this.radioButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.radioButton1.Location = new System.Drawing.Point(493, 250);
             this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(48, 17);
+            this.radioButton1.Size = new System.Drawing.Size(62, 24);
             this.radioButton1.TabIndex = 2;
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "Easy";
@@ -80,9 +84,10 @@ namespace My_first_WinForms_app
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(572, 207);
+            this.radioButton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.radioButton2.Location = new System.Drawing.Point(566, 250);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(62, 17);
+            this.radioButton2.Size = new System.Drawing.Size(83, 24);
             this.radioButton2.TabIndex = 3;
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "Medium";
@@ -92,9 +97,10 @@ namespace My_first_WinForms_app
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(651, 207);
+            this.radioButton3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.radioButton3.Location = new System.Drawing.Point(655, 250);
             this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(48, 17);
+            this.radioButton3.Size = new System.Drawing.Size(62, 24);
             this.radioButton3.TabIndex = 4;
             this.radioButton3.TabStop = true;
             this.radioButton3.Text = "Hard";
@@ -104,7 +110,7 @@ namespace My_first_WinForms_app
             // pictureBox2
             // 
             this.pictureBox2.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.pictureBox2.Location = new System.Drawing.Point(562, 12);
+            this.pictureBox2.Location = new System.Drawing.Point(563, 45);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(86, 86);
             this.pictureBox2.TabIndex = 5;
@@ -114,9 +120,10 @@ namespace My_first_WinForms_app
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(493, 252);
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.button2.Location = new System.Drawing.Point(493, 280);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(109, 30);
             this.button2.TabIndex = 6;
             this.button2.Text = "Save";
             this.button2.UseVisualStyleBackColor = true;
@@ -124,13 +131,34 @@ namespace My_first_WinForms_app
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(636, 252);
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.button3.Location = new System.Drawing.Point(608, 280);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(109, 30);
             this.button3.TabIndex = 7;
             this.button3.Text = "Load";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.GrayText;
+            this.label1.Font = new System.Drawing.Font("Noto Sans CJK SC Medium", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.label1.Location = new System.Drawing.Point(579, 159);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(138, 55);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "label1";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // Form1
             // 
@@ -138,6 +166,7 @@ namespace My_first_WinForms_app
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.pictureBox2);
@@ -167,6 +196,8 @@ namespace My_first_WinForms_app
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
