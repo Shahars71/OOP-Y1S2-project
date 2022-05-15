@@ -579,48 +579,48 @@ namespace My_first_WinForms_app
                         {
                             if (j > 0)
                             {
-                                if (!grid[i,j-1].IsBomb())
+                            if (!grid[i, j - 1].IsBomb()) 
                                 grid[i, j - 1] = new NumBlock();
                             }
 
                             if (j < size - 1)
                             {
-                            if (!grid[i, j+1].IsBomb())
+                            if (!grid[i, j + 1].IsBomb()) 
                                 grid[i, j + 1] = new NumBlock();
                             }
 
                             if (i > 0)
                             {
-                            if (!grid[i-1, j].IsBomb())
+                            if (!grid[i - 1, j].IsBomb()) 
                                 grid[i - 1, j] = new NumBlock();
 
                                 if (j > 0)
                                 {
-                                if (!grid[i-1, j-1].IsBomb())
+                                if (!grid[i - 1, j - 1].IsBomb()) 
                                     grid[i - 1, j - 1] = new NumBlock();
                                 }
 
                                 if (j < size - 1)
                                 {
-                                if (!grid[i-1, j+1].IsBomb())
+                                if (!grid[i - 1, j + 1].IsBomb()) 
                                     grid[i - 1, j + 1] = new NumBlock();
                                 }
                             }
 
                             if (i < size - 1)
                             {
-                            if (!grid[i+1, j].IsBomb())
+                            if (!grid[i + 1, j].IsBomb()) 
                                 grid[i + 1, j] = new NumBlock();
 
                                 if (j > 0)
                                 {
-                                if (!grid[i+1, j-1].IsBomb())
+                                if (!grid[i + 1, j - 1].IsBomb()) 
                                     grid[i + 1, j - 1] = new NumBlock();
                                 }
 
                                 if (j < size - 1)
                                 {
-                                if (!grid[i+1, j+1].IsBomb())
+                                if (!grid[i + 1, j + 1].IsBomb()) 
                                     grid[i + 1, j + 1] = new NumBlock();
                                 }
                             }
@@ -638,48 +638,48 @@ namespace My_first_WinForms_app
                     {
                         if (j > 0)
                         {
-                            if (!grid[i, j-1].IsBomb())
+                            if (!grid[i, j - 1].IsBomb()) 
                                 ((NumBlock)grid[i, j - 1]).IncrementNum();
                         }
 
                         if (j < size - 1)
                         {
-                            if (!grid[i, j+1].IsBomb())
+                            if (!grid[i, j + 1].IsBomb()) 
                                 ((NumBlock)grid[i, j + 1]).IncrementNum();
                         }
 
                         if (i > 0)
                         {
-                            if (!grid[i-1, j].IsBomb())
+                            if (!grid[i - 1, j].IsBomb()) 
                                 ((NumBlock)grid[i - 1, j]).IncrementNum();
 
                             if (j > 0)
                             {
-                                if (!grid[i-1, j-1].IsBomb())
+                                if (!grid[i - 1, j - 1].IsBomb()) 
                                     ((NumBlock)grid[i - 1, j - 1]).IncrementNum();
                             }
 
                             if (j < size - 1)
                             {
-                                if (!grid[i-1, j+1].IsBomb())
+                                if (!grid[i - 1, j + 1].IsBomb()) 
                                     ((NumBlock)grid[i - 1, j + 1]).IncrementNum();
                             }
                         }
 
                         if (i < size - 1)
                         {
-                            if (!grid[i+1, j].IsBomb())
+                            if (!grid[i + 1, j].IsBomb()) 
                                 ((NumBlock)grid[i + 1, j]).IncrementNum();
 
                             if (j > 0)
                             {
-                                if (!grid[i+1, j-1].IsBomb())
+                                if (!grid[i + 1, j - 1].IsBomb()) 
                                     ((NumBlock)grid[i + 1, j - 1]).IncrementNum();
                             }
 
                             if (j < size - 1)
                             {
-                                if (!grid[i+1, j+1].IsBomb())
+                                if (!grid[i + 1, j + 1].IsBomb()) 
                                     ((NumBlock)grid[i + 1, j + 1]).IncrementNum();
                             }
                         }
@@ -691,10 +691,11 @@ namespace My_first_WinForms_app
         public void redoGame()
         {
             int i, j;
+            bombs = new position[difficulty];
 
-            for (i=0;i<size;i++)
+            for (i = 0; i < size; i++) 
             {
-                for (j=0;j<size;j++)
+                for (j = 0; j < size; j++) 
                 {
                     grid[i,j] = new GameBlock();
                 }
