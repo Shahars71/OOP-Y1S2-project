@@ -490,7 +490,7 @@ namespace My_first_WinForms_app
         BLOCK [,] grid;
         int difficulty;
         int size;
-        int flagCount;
+
         BombBlock[] bombs;
 
         public int Difficulty
@@ -519,18 +519,6 @@ namespace My_first_WinForms_app
             }
         }
 
-        public int FlagCount
-        {
-            get
-            {
-                return flagCount;
-            }
-
-            set
-            {
-                size = value;
-            }
-        }
 
         public BLOCK this[int x,int y]
         {
@@ -547,7 +535,6 @@ namespace My_first_WinForms_app
         public GameGrid(int diff, int s)
         {
             difficulty = diff;
-            flagCount = diff;
             size = s;
             bombs = new BombBlock[diff];
 
