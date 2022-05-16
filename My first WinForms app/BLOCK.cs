@@ -52,8 +52,6 @@ namespace My_first_WinForms_app
         }
     }
 
-
-
     [Serializable]
     public abstract class BLOCK
     {
@@ -116,7 +114,6 @@ namespace My_first_WinForms_app
         public abstract void Draw(Graphics g, int i, int j);
         public abstract bool IsBomb();
         public abstract int giveNum();
-
         public abstract void changeFlag(bool cond);
     }
 
@@ -206,10 +203,6 @@ namespace My_first_WinForms_app
 
         public override void Draw(Graphics g, int i, int j)
         {
-            SolidBrush br = new SolidBrush(Color.Gray);
-            Pen p = new Pen(Color.Black,1);
-
-
             if (IsVisible)
             {
                 this.Img = Image.FromFile("Sprites\\blockvis.png");
@@ -220,9 +213,6 @@ namespace My_first_WinForms_app
             }
             else this.Img = Image.FromFile("Sprites\\block.png");
 
-
-            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
-            //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
         }
         public override bool IsBomb()
@@ -241,93 +231,93 @@ namespace My_first_WinForms_app
         }
     }
 
-    [Serializable]
+    //[Serializable]
 
-    public class ActivatedBlock : GameBlock
-    {
-        bool bomb;
-        int number;
+    //public class ActivatedBlock : GameBlock
+    //{
+    //    bool bomb;
+    //    int number;
 
-        public ActivatedBlock()
-            : this(false, 0)
-        {}
+    //    public ActivatedBlock()
+    //        : this(false, 0)
+    //    {}
 
-        public ActivatedBlock(bool b, int n)
-        {
-            bomb = b;
-            number = n;
-        }
+    //    public ActivatedBlock(bool b, int n)
+    //    {
+    //        bomb = b;
+    //        number = n;
+    //    }
 
-        public bool Bomb
-        {
-            get
-            {
-                return bomb;
-            }
+    //    public bool Bomb
+    //    {
+    //        get
+    //        {
+    //            return bomb;
+    //        }
 
-            set
-            {
-                bomb = value;
-            }
-        }
+    //        set
+    //        {
+    //            bomb = value;
+    //        }
+    //    }
 
-        public int Number
-        {
-            get
-            {
-                return number;
-            }
+    //    public int Number
+    //    {
+    //        get
+    //        {
+    //            return number;
+    //        }
 
-            set
-            {
-                number = value;
-            }
-        }
+    //        set
+    //        {
+    //            number = value;
+    //        }
+    //    }
 
 
-        public void incrementNum()
-        {
-            if (!bomb)
-                number++;
-        } 
+    //    public void incrementNum()
+    //    {
+    //        if (!bomb)
+    //            number++;
+    //    } 
 
-        public override void Draw(Graphics g, int i, int j)
-        {
-            SolidBrush br = new SolidBrush(Color.Gray);
-            Pen p = new Pen(Color.Black, 1);
-            //String num = number.ToString();
-            //Font font = new Font("Arial", 11 * 1.33f, FontStyle.Bold, GraphicsUnit.Pixel);
+    //    public override void Draw(Graphics g, int i, int j)
+    //    {
+    //        SolidBrush br = new SolidBrush(Color.Gray);
+    //        Pen p = new Pen(Color.Black, 1);
+    //        //String num = number.ToString();
+    //        //Font font = new Font("Arial", 11 * 1.33f, FontStyle.Bold, GraphicsUnit.Pixel);
 
-            switch (number) 
-            {
-                case 1:
-                    if (IsVisible)
-                        br.Color = Color.Blue;
-                    break;
-                case 2:
-                    if (IsVisible)
-                        br.Color = Color.Orange;
-                    break;
-                case 3:
-                    if (IsVisible)
-                        br.Color = Color.DarkRed;
-                    break;
-                default:
-                    if (IsVisible)
-                        br.Color = Color.White;
-                    break;
-            }
+    //        switch (number) 
+    //        {
+    //            case 1:
+    //                if (IsVisible)
+    //                    br.Color = Color.Blue;
+    //                break;
+    //            case 2:
+    //                if (IsVisible)
+    //                    br.Color = Color.Orange;
+    //                break;
+    //            case 3:
+    //                if (IsVisible)
+    //                    br.Color = Color.DarkRed;
+    //                break;
+    //            default:
+    //                if (IsVisible)
+    //                    br.Color = Color.White;
+    //                break;
+    //        }
 
-            if (Bomb && IsVisible)
-                br.Color = Color.Black;
+    //        if (Bomb && IsVisible)
+    //            br.Color = Color.Black;
 
-            g.FillRectangle(br, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
-            g.DrawRectangle(p, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
-            //g.DrawString(num, font, br, new PointF(Pos.Col + j * 20, Pos.Row + i * 20));
+    //        g.FillRectangle(br, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
+    //        g.DrawRectangle(p, Pos.Col + j*20, Pos.Row + i*20, 20, 20);
+    //        //g.DrawString(num, font, br, new PointF(Pos.Col + j * 20, Pos.Row + i * 20));
 
-        }
+    //    }
 
-    }
+    //}
 
     [Serializable]
     public class BombBlock : GameBlock
@@ -362,8 +352,6 @@ namespace My_first_WinForms_app
 
         public override void Draw(Graphics g, int i, int j)
         {
-            SolidBrush br = new SolidBrush(Color.Gray);
-            Pen p = new Pen(Color.Black, 1);
 
             if (IsVisible)
                 this.Img = Image.FromFile("Sprites\\blockBomb.png");
@@ -371,8 +359,6 @@ namespace My_first_WinForms_app
                 this.Img = Image.FromFile("Sprites\\flagRed.png");
             else this.Img = Image.FromFile("Sprites\\block.png");
 
-            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
-            //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
         }
 
@@ -423,8 +409,6 @@ namespace My_first_WinForms_app
 
         public override void Draw(Graphics g, int i, int j)
         {
-            SolidBrush br = new SolidBrush(Color.Gray);
-            Pen p = new Pen(Color.Black, 1);
 
             switch (num)
             {
@@ -477,8 +461,6 @@ namespace My_first_WinForms_app
             else if (!HasFlag && !IsVisible)
                 this.Img = Image.FromFile("Sprites\\block.png");
 
-            g.FillRectangle(br, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
-            //g.DrawRectangle(p, Pos.Col + j * 20, Pos.Row + i * 20, 20, 20);
             g.DrawImage(this.Img, Pos.Col + j * 20, Pos.Row + i * 20);
         }
     }
@@ -489,8 +471,7 @@ namespace My_first_WinForms_app
     {
         BLOCK [,] grid;
         int difficulty;
-        int size;
-
+        int size;   
         position[] bombs;
 
         public int Difficulty
@@ -811,7 +792,7 @@ namespace My_first_WinForms_app
 
             for (i=0;i < difficulty; i++)
             {
-                Console.WriteLine("Bomb [" + i + "] = [" + bombs[i].Row + "," + bombs[i].Col + "]");
+                //Console.WriteLine("Bomb [" + i + "] = [" + bombs[i].Row + "," + bombs[i].Col + "]");
                 if (!((GameBlock)grid[bombs[i].Row,bombs[i].Col]).HasFlag)
                     return false;
             }
