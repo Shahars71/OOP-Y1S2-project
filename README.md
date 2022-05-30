@@ -1,8 +1,6 @@
-# OOP-Y1S2-project
+# Winforms Minesweeper
 
-OOP means Object Oriented Programming
-
-Year 1 Semester 2 project: Winforms Minesweeper
+Object Oriented Programming course Year 1 Semester 2 project: Winforms Minesweeper
 
 
 # Credits
